@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -50,12 +50,39 @@ class PerceptronClassifier:
         self.features = trainingData[0].keys() # could be useful later
         # DO NOT ZERO OUT YOUR WEIGHTS BEFORE STARTING TRAINING, OR
         # THE AUTOGRADER WILL LIKELY DEDUCT POINTS.
+        #print(self.weights)
+        #print("training data", trainingLabels)
 
         for iteration in range(self.max_iterations):
             print "Starting iteration ", iteration, "..."
             for i in range(len(trainingData)):
-                "*** YOUR CODE HERE ***"
-                util.raiseNotDefined()
+                sample = trainingData[i]
+                max_val = -1000000000
+                max_arg = None
+                for arg in self.legalLabels:
+                    #print(arg)
+                    #print("weights", self.weights[arg])
+                    score = sample*self.weights[arg]
+                    #print("score", score)
+                    if score > max_val:
+                        max_val = score
+                        max_arg = arg
+
+                if max_arg != trainingLabels[i]:
+                    for arg in self.weights:
+                        if arg != trainingLabels[i]:
+                            self.weights[arg] -= sample
+                        else:
+                            self.weights[arg] += sample
+                    #self.weights += sample*-1
+                    #self.weights[trainingLabels[i]] += 2*sample[i]
+                #i
+
+                #for j in range(len(sample)):
+                #print(self.features)
+                #print(sample)
+                #"*** YOUR CODE HERE ***"
+                #util.raiseNotDefined()
 
     def classify(self, data ):
         """
