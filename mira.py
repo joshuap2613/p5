@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -61,7 +61,64 @@ class MiraClassifier:
         representing a vector of values.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        best_accuracy = -1000000000000
+        bestc = None
+        bestweights = None
+
+        for C in Cgrid:
+            temp_weights = self.weights
+            for I in range(self.max_iterations):
+                for i in range(len(trainingData)):
+                    label = trainingLabels[i]
+
+                    sample = trainingData[i]
+                    max_val = -1000000000
+                    prediction = None
+                    for arg in self.legalLabels:
+                        score = sample*self.weights[arg]
+                        if score > max_val:
+                            max_val = score
+                            prediction = arg
+
+
+                    tau = min(C, ((temp_weights[prediction]-temp_weights[label])*sample+1.0)/(2*(sample*sample)))
+                    ##print('tau = ' + str(tau))
+                    #print(sample)
+
+                    tausamp = util.Counter()
+                    for k in sample.keys():
+                        tausamp[k] = sample[k]*tau
+                    if prediction != label:
+                        for arg in self.weights:
+                            if arg == prediction:
+                                temp_weights[arg] -= tausamp
+                            elif arg == label:
+                                temp_weights[arg] += tausamp
+
+            #now we test
+            num_right = 0
+            for i in range(len(validationData)):
+                sample = validationData[i]
+                max_val = -1000000000
+                prediction = None
+                for arg in self.legalLabels:
+                    score = sample*temp_weights[arg]
+                    if score > max_val:
+                        max_val = score
+                        prediction = arg
+                        bestweights = temp_weights
+
+
+                if prediction == validationLabels[i]:
+                    num_right+=1
+
+            accuracy = (num_right*1.0)/len(validationData)
+            if (accuracy > best_accuracy or (C < bestc and accuracy == best_accuracy)):
+                bestc = C
+                best_accuracy = accuracy
+                best_weights = temp_weights
+
+        self.weights = best_weights
 
     def classify(self, data ):
         """
@@ -77,5 +134,3 @@ class MiraClassifier:
                 vectors[l] = self.weights[l] * datum
             guesses.append(vectors.argMax())
         return guesses
-
-

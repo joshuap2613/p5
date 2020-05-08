@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -64,6 +64,8 @@ def basicFeatureExtractorFace(datum):
                 features[(x,y)] = 0
     return features
 
+#def maxmin(features, height, width):
+
 def enhancedFeatureExtractorDigit(datum):
     """
     Your feature extraction playground.
@@ -75,10 +77,95 @@ def enhancedFeatureExtractorDigit(datum):
 
     ##
     """
+    WIDTH = 6
+    HEIGHT = 6
     features =  basicFeatureExtractorDigit(datum)
 
+    """
+    max_counter = util.Counter()
+    min_counter = util.Counter()
+    for i in range(int(DIGIT_DATUM_WIDTH/WIDTH)):
+        for j in range(int(DIGIT_DATUM_HEIGHT/HEIGHT)):
+            max_counter[(i, j, 0)] = 0
+            min_counter[(i, j, 1)] = 1
+
+
+    for i in range(DIGIT_DATUM_WIDTH):
+        for j in range(DIGIT_DATUM_HEIGHT):
+            if (features[i, j] == 1):
+                max_counter[(int(i/WIDTH), int(j/HEIGHT), 0)] = 1
+            if (features[i, j] == 0):
+                min_counter[(int(i/WIDTH), int(j/HEIGHT), 1)] = 0
+    features += max_counter + min_counter
+
+    WIDTH = 4
+    HEIGHT = 4
+
+    max_counter = util.Counter()
+    min_counter = util.Counter()
+    for i in range(int(DIGIT_DATUM_WIDTH/WIDTH)):
+        for j in range(int(DIGIT_DATUM_HEIGHT/HEIGHT)):
+            max_counter[(i, j, 2)] = 0
+            min_counter[(i, j, 3)] = 1
+
+
+    for i in range(DIGIT_DATUM_WIDTH):
+        for j in range(DIGIT_DATUM_HEIGHT):
+            if (features[i, j] == 1):
+                max_counter[(int(i/WIDTH), int(j/HEIGHT), 2)] = 1
+            if (features[i, j] == 0):
+                min_counter[(int(i/WIDTH), int(j/HEIGHT), 3)] = 0
+    features += max_counter + min_counter
+
+    WIDTH = 14
+    HEIGHT = 14
+
+    max_counter = util.Counter()
+    min_counter = util.Counter()
+    for i in range(int(DIGIT_DATUM_WIDTH/WIDTH)):
+        for j in range(int(DIGIT_DATUM_HEIGHT/HEIGHT)):
+            max_counter[(i, j, 4)] = 0
+            min_counter[(i, j, 5)] = 1
+
+
+    for i in range(DIGIT_DATUM_WIDTH):
+        for j in range(DIGIT_DATUM_HEIGHT):
+            if (features[i, j] == 1):
+                max_counter[(int(i/WIDTH), int(j/HEIGHT), 4)] = 1
+            if (features[i, j] == 0):
+                min_counter[(int(i/WIDTH), int(j/HEIGHT), 5)] = 0
+    features += max_counter + min_counter
+    """
+    col_features = util.Counter()
+    filled = [1,2, 3,4, 5,6, 7,8, 9,10, 11,12,13,14, 15,16, 17,18, 19,20, 21]
+    for i in range(DIGIT_DATUM_WIDTH):
+        total = 0
+        for j in range(DIGIT_DATUM_HEIGHT):
+            total += features[j,i]
+        for f in filled:
+            if total >= f:
+                col_features[("col", i, f)] = 1
+            else:
+                col_features[("col", i, f)] = 0
+
+    row_features = util.Counter()
+    for i in range(DIGIT_DATUM_HEIGHT):
+        total = 0
+        for j in range(DIGIT_DATUM_WIDTH):
+            total += features[i,j]
+        for f in filled:
+            if total >= f:
+                row_features[("row", i, f)] = 1
+            else:
+                row_features[("row", i, f)] = 0
+    features += row_features+col_features
+
+
+
+    #print(features)
+
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
 
     return features
 
@@ -364,7 +451,7 @@ def runClassifier(args, options):
     featureFunction = args['featureFunction']
     classifier = args['classifier']
     printImage = args['printImage']
-    
+
     # Load data
     numTraining = options.training
     numTest = options.test

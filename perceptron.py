@@ -60,10 +60,7 @@ class PerceptronClassifier:
                 max_val = -1000000000
                 max_arg = None
                 for arg in self.legalLabels:
-                    #print(arg)
-                    #print("weights", self.weights[arg])
                     score = sample*self.weights[arg]
-                    #print("score", score)
                     if score > max_val:
                         max_val = score
                         max_arg = arg
@@ -74,15 +71,7 @@ class PerceptronClassifier:
                             self.weights[arg] -= sample
                         else:
                             self.weights[arg] += sample
-                    #self.weights += sample*-1
-                    #self.weights[trainingLabels[i]] += 2*sample[i]
-                #i
 
-                #for j in range(len(sample)):
-                #print(self.features)
-                #print(sample)
-                #"*** YOUR CODE HERE ***"
-                #util.raiseNotDefined()
 
     def classify(self, data ):
         """
